@@ -11,7 +11,6 @@ Public visitors can try a prepared fictional example without signing in or enter
 - [PRD: read on GitHub](docs/PRD.md) · [PDF](docs/Vaidya_Setu_MVP_PRD.pdf) · [editable Word document](docs/Vaidya_Setu_MVP_PRD.docx)
 - [India teleconsultation research and primary sources](docs/MARKET_RESEARCH.md)
 - [Manual acceptance log: completed and pending checks](docs/WEB_MANUAL_CHECKS.csv)
-- [GitHub upload instructions for beginners](docs/GITHUB_UPLOAD_GUIDE.md)
 - [Automated software check log](evidence/WEB_TEST_LOG.txt)
 
 ## What the MVP does
