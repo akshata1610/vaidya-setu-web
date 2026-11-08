@@ -1,0 +1,18 @@
+﻿Case_ID,Check,Status,Actual_result_or_next_step,Date,Version,Browser,Evidence_scope
+P01,Anonymous website access,Pass,Live page opened without a sign-in gate; version 0.3.1-web visible.,2026-11-08,0.3.1-web,Chrome cloud browser,Fictional / anonymous only
+P02,Anonymous fictional example,Pass,Prepared example opened without a key or login; label says not archived.,2026-11-08,0.3.1-web,Chrome cloud browser,Fictional / anonymous only
+P03,Varied consecutive examples,Pass,Clear/new session followed by another example changed Alpha/tablet to Beta/syrup.,2026-11-08,0.3.1-web,Chrome cloud browser,Fictional / anonymous only
+P04,Original separate from edit,Pass,Local dose edit to 2 tablets retained original 1 tablet on evaluation screen.,2026-11-08,0.3.1-web,Chrome cloud browser,Fictional / anonymous only
+P05,Field evaluation and partial reference,Pass,Verified fictional source dose gave 1 correct stated field; absent route gave 1 correctly blank; partial reference label remained.,2026-11-08,0.3.1-web,Chrome cloud browser,Fictional / anonymous only
+P06,Refresh clears local preview,Pass,Reload returned the initial input page; prepared edits were gone.,2026-11-08,0.3.1-web,Chrome cloud browser,Fictional / anonymous only
+P07,Anonymous archive read protection,Pass,Direct archive endpoint showed sign-in-required JSON without consultation data.,2026-11-08,0.3.1-web,Chrome cloud browser,Fictional / anonymous only
+P08,Two signed-in account isolation,Not run,Needs two authenticated accounts and test records.,,0.3.1-web,,Not established
+P09,Live Sarvam key test,Not run,No real API key used in this authoring run.,,0.3.1-web,,Not established
+P10,90-second WAV transcription and extraction,Not run,Needs a consented or fictional human recording and API access.,,0.3.1-web,,Not established
+P11,Save and reopen a cloud case,Not run,Needs a signed-in acceptance run.,,0.3.1-web,,Not established
+P12,Route confirmation through signed-in approval,Not run,Automated checks cover logic; full signed-in browser acceptance pending.,,0.3.1-web,,Not established
+P13,Changed version and verified contradiction gates,Not run,Automated checks cover domain behaviour; browser acceptance pending.,,0.3.1-web,,Not established
+P14,"Translation, audio listening and download",Not run,Needs a key and suitable bilingual review.,,0.3.1-web,,Not established
+P15,Stale second-tab save,Not run,Needs signed-in concurrent test tabs.,,0.3.1-web,,Not established
+P16,Delete a disposable archived case,Not run,Needs an explicitly disposable signed-in test case.,,0.3.1-web,,Not established
+P17,Clear a selected real WAV input,Not run,Needs signed-in browser file selection test.,,0.3.1-web,,Not established

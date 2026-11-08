@@ -1,0 +1,44 @@
+(node:12) ExperimentalWarning: Transform Types is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ tablet route is a proposal, not an extracted fact (2.780011ms)
+✔ syrup suggests oral (0.44102ms)
+✔ cream suggests skin with a confirmation warning (0.51563ms)
+✔ explicit route takes precedence over tablet form (0.309172ms)
+✔ specialised and ambiguous forms do not receive a generic default (0.587846ms)
+✔ unconfirmed route blocks approval (0.593117ms)
+✔ a confirmed route clears that blocker without rewriting original (1.600161ms)
+✔ missing required instruction and unclear action block approval (0.34017ms)
+✔ no verified reference means no passing score (0.589018ms)
+✔ not-mentioned and a blank draft is correctly blank (1.056137ms)
+✔ a stated value omitted by AI is missed (0.502565ms)
+✔ a route inferred by AI but absent in the source is unsupported (0.360508ms)
+✔ manual corrections do not inflate original-draft correctness (0.407436ms)
+✔ route proposal confirmation is excluded from extraction scoring (0.370868ms)
+✔ second and added medicines affect the evaluation (0.447182ms)
+✔ extra final-plan medicines are counted (0.198253ms)
+✔ a final-plan medicine excluded by a verified reference blocks approval (0.340541ms)
+✔ a current value contradicted by a verified reference blocks approval (0.283874ms)
+✔ unclear and unreviewed source fields do not enter denominator (0.286389ms)
+✔ intervals are not equated with times per day (0.208212ms)
+✔ invalidation clears dependent approvals and voice output (0.278504ms)
+✔ foreign owners and stale revisions are rejected (0.653189ms)
+✔ provider file URLs cannot target arbitrary or local hosts (0.448564ms)
+✔ malformed medicine data and duplicate IDs are rejected (0.648521ms)
+✔ invalid WAV input is rejected (1.505453ms)
+✔ extraction disables reasoning and does not send reference data (4.253693ms)
+✔ a truncated answer is retried once then rejected (0.794304ms)
+✔ 401 is not format-retried and key is absent from error (0.547249ms)
+(node:13) ExperimentalWarning: Transform Types is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ public examples are fictional, local and vary by scenario (3.159615ms)
+✔ local review never rewrites the original prepared draft (1.030319ms)
+✔ public preview rejects provider, archive and deletion actions (3.088482ms)
+✔ local demo actions reject a private archived case (0.466158ms)
+ℹ tests 32
+ℹ suites 0
+ℹ pass 32
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 283.743287
