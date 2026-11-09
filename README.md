@@ -11,10 +11,8 @@ Public visitors can try a prepared fictional example without signing in or enter
 - [PRD: read on GitHub](docs/PRD.md) · [PDF](docs/Vaidya_Setu_MVP_PRD.pdf) · [editable Word document](docs/Vaidya_Setu_MVP_PRD.docx)
 - [India teleconsultation research and primary sources](docs/MARKET_RESEARCH.md)
 - [Manual acceptance log: completed and pending checks](docs/WEB_MANUAL_CHECKS.csv)
-- [GitHub upload instructions for beginners](docs/GITHUB_UPLOAD_GUIDE.md)
 - [Release notes for 0.3.2](docs/RELEASE_NOTES_0.3.2.md)
 - [Automated software check log](evidence/WEB_TEST_LOG.txt) · [Workers runtime check](evidence/BATCH_WORKER_SMOKE_LOG.txt)
-- [Narrated video transcript](docs/VIDEO_TRANSCRIPT.md)
 
 ## Recording recovery in this release
 
