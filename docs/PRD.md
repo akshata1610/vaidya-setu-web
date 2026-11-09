@@ -6,8 +6,8 @@ Product requirements for public demonstration and private consultation review
 | --- | --- |
 | Product owner | Akshata Anil Urs |
 | Updated | 8 November 2026 |
-| PRD version | 3.0 |
-| Web application | 0.3.1 web |
+| PRD version | 3.1 |
+| Web application | 0.3.2 web |
 | Stage | Independent portfolio MVP built with AI assisted coding |
 | Live website | [Open Vaidya Setu](https://vaidya-setu-review-lab.akshata-urs.chatgpt.site/) |
 
@@ -60,7 +60,7 @@ Apollo's Health of the Nation 2026 report attributes **7.99 million digital cons
 | F01 | Public browsing and varied fictional previews | Preview changes remain in the browser tab and disappear on refresh |
 | F02 | ChatGPT sign in for uploads, model requests and archives | Each operation must authorize the account; no owner invitation is needed once the site is public |
 | F03 | Completed PCM WAV up to 10 minutes and 30 MB, or pasted text | Pasted text is labelled as bypassing STT |
-| F04 | Short file REST STT and longer file batch STT | Batch results are checked while the page is open; pending jobs can be resumed |
+| F04 | Short file REST STT and longer file batch STT | Open page polling; interrupted upload or start can resume from the saved source |
 | F05 | Up to 12 medication records with evidence and review notes | Unknown facts stay blank; model accuracy is unestablished |
 | F06 | Saved corrections and version bound simulated approval | Changed facts or language invalidate dependent outputs |
 | F07 | Explicit route plus separate form based suggestions | Suggested routes require confirmation and never become spoken evidence |
@@ -125,7 +125,7 @@ Prepared examples are excluded from archive quality counters. Human role plays, 
 
 | Metric | Current evidence or definition | Status |
 | --- | --- | --- |
-| Software checks | 32 passing checks using fictional fixtures and mocked provider responses | Verified development run for 0.3.1 web |
+| Software checks | 43 passing checks using fictional fixtures and mocked provider responses | Verified development run for 0.3.2 web |
 | Type and production build checks | TypeScript and deployable build complete successfully | Development verification |
 | Public access | Anonymous visitor can open the page and local demo; private API reads reject missing identity | Anonymous checks passed; account tests pending |
 | Archive outcomes | Counts of correct, incorrect or missed, correctly blank and unsupported fields against verified references | Implemented; no real recording performance claim |
@@ -135,7 +135,7 @@ Prepared examples are excluded from archive quality counters. Human role plays, 
 | Audio fidelity | Correctly spoken critical instructions compared with approved facts | Bilingual assessment pending |
 | Latency and cost | Actual stage timings and provider usage, including retries and review | Per run metadata exists; no aggregate latency or rupee claim |
 
-The previous Python app's 53 checks are separate evidence and are not added to the website's test count. Passing software checks do not establish medication accuracy, clinical safety or benefit.
+An additional Workers runtime check reproduces the former redirect error and completes recovery with fixtures. The Python app's 53 checks remain separate. These checks do not establish clinical accuracy, safety or benefit.
 
 ## 9 Manual acceptance checks
 
@@ -179,10 +179,10 @@ Recording permission must cover external AI processing and archiving, rather tha
 
 ## 11 Priorities and next validation
 
-The portfolio release prioritizes an accessible public demonstration, private review records, traceable corrections and honest evaluation. Next, complete a signed in role play from WAV to reviewed audio, verify isolation with two accounts, collect qualified reference annotations and assess bilingual output. Define a held out benchmark before claiming real recording accuracy.
+Next, validate a signed in role play from WAV to reviewed audio, two account isolation, qualified reference annotations and bilingual output. Define a held out benchmark before reporting real recording accuracy.
 
-Later work may add authenticated clinician sign off, durable operational controls, measured patient comprehension, appropriate WhatsApp delivery and streaming transcription. Live interpretation requires a separate product and evaluation design; an incomplete streaming transcript should not trigger automatic final instructions.
+Later work includes clinician sign off, operational controls, patient comprehension studies, WhatsApp delivery and streaming transcription. Live interpretation needs separate evaluation; incomplete transcripts must not trigger automatic final instructions.
 
 ## 12 Evidence register
 
-The package contains source code, 32 software checks, test logs, this PRD, market sources and upload instructions. Public files exclude patient records and credentials.
+The package contains source code, 43 software checks, test logs, this PRD, market sources and upload instructions. Public files exclude patient records and credentials.

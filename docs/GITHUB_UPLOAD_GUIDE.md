@@ -1,35 +1,55 @@
-# Publish Vaidya Setu on GitHub
+# Update Vaidya Setu on GitHub
 
-Updated 8 November 2026 for the hosted application 0.3.1 web.
+Updated 8 November 2026 for website version **0.3.2-web** and PRD **3.1**.
 
-The recommended setup is a public GitHub repository and a public fictional website preview, with sign in for uploads, Sarvam calls and personal archives. A recruiter does not need your approval to inspect the public project or try the prepared demo. Another account cannot access your archived cases through the app.
+The website fix is already live at [Vaidya Setu](https://vaidya-setu-review-lab.akshata-urs.chatgpt.site/). Your GitHub repository is a separate snapshot of the project. Upload the new package to bring its code and documents into line with the deployed fix. No new repository or website is needed.
 
-## Understand the two links
+## What changed and why
 
-| Link | Purpose | Who can access it |
+| File or document | Change | Effect |
 | --- | --- | --- |
-| Your GitHub repository | Source code, README, PRD, research and test evidence | Everyone when you choose Public |
-| [Live Vaidya Setu website](https://vaidya-setu-review-lab.akshata-urs.chatgpt.site/) | Use the hosted product | Public pages and fictional preview need no sign in; uploads and archives require ChatGPT sign in |
+| lib/sarvam.ts | Worker-compatible file requests and recovery of existing batch jobs | Long recordings can get past the prior upload error; result downloads use the same correction |
+| components/lab.tsx | Resume checks the saved job and displays the retained failure | A failed upload is retried instead of only polling an unstarted job |
+| app/api/lab/route.ts | Keeps the original transcription start time on resume | Timing metadata remains consistent across retries |
+| lib/domain.ts | Version becomes 0.3.2-web | You can identify the new release in the sidebar |
+| tests and evidence | 43 software checks plus an actual Workers runtime fixture check | Records both the regression and its recovery; no clinical accuracy claim |
+| README and release notes | Scope, fix, verification and limits | Recruiters can understand what is working and what remains untested |
+| PRD Word, PDF and Markdown | PRD 3.1 reflects this release and evidence | Product documentation matches the updated implementation |
 
-GitHub does not automatically run uploaded code. GitHub Pages hosts static sites; this app also needs a backend, authentication, a database and private file storage. Keep the existing hosted website and link to it from GitHub. GitHub edits do not automatically update that deployment.
+## Update an existing repository using your browser
 
-## Upload using your browser
+1. Download **Vaidya_Setu_Web_0.3.2_GitHub_Ready.zip**. On Windows, right click it and select **Extract All**.
+2. Open the extracted **vaidya-setu-web** folder. README.md and package.json should be directly inside it, alongside app, lib, docs, tests and other folders.
+3. Sign in to [GitHub](https://github.com/) and open your **existing project repository**. Stay at its top level, where README.md appears. Do not open a new repository just for this fix.
+4. Select **Add file → Upload files** above the file list.
+5. Drag the **contents inside vaidya-setu-web** into the upload area. Upload the individual files and folders, not the ZIP or an extra enclosing project folder. Matching paths replace the older files in the new commit; the repository's earlier commits remain available.
+6. Check the path list before saving. README.md must be at the top level, and lib/sarvam.ts must sit under lib. The list should not begin with an additional vaidya-setu-web/ folder. Do not manually select patient data, API keys, .env, node_modules or .git; browser uploads do not apply .gitignore to files you select.
+7. Enter the commit message **Fix transcription recovery and update docs for v0.3.2**. A commit is a saved version of the repository.
+8. If GitHub offers a direct commit to your own branch, you may use it. If it asks for a new branch, click **Propose changes**, create the pull request, review its files and merge it into your main branch. Protected repository rules may require this route.
+9. On the repository's main page, check README for **0.3.2-web**. Open lib/domain.ts and check the same version. Confirm tests/batch-transcription.test.mjs and docs/RELEASE_NOTES_0.3.2.md are present.
+10. Keep the existing **Open the live demo** link and the About section's Website URL: **https://vaidya-setu-review-lab.akshata-urs.chatgpt.site/**. These still point to the same hosted app.
+11. Open the repository and its live-demo link in a private browser window. Verify the public README and fictional example are accessible. Real uploads and private archives require ChatGPT sign-in and the visitor's own Sarvam key.
 
-1. Download **Vaidya_Setu_Web_GitHub_Ready.zip** and right click **Extract All** on Windows.
-2. Open the extracted **vaidya-setu-web** folder. README.md and package.json should be directly inside it, alongside app, lib, docs and other folders.
-3. Sign in to [GitHub](https://github.com/) and select the plus menu, then **New repository**. A repository is an online project folder.
-4. Name it **vaidya-setu-web**. Suggested description: **Recorded consultation medication review MVP with patient language audio, private evaluation history and a public fictional demo using Sarvam APIs.**
-5. Choose **Public**. Leave Add README and generated ignore file options off because the prepared folder supplies them. Leave the licence unselected until you decide what reuse rights to grant.
-6. Click **Create repository**. Choose **upload an existing file** on the empty repository page. For an existing repository, use **Add file**, then **Upload files**.
-7. Drag the **contents** of vaidya-setu-web into the upload area. Upload the files and folders, not the ZIP itself. Keep README.md and package.json at the repository root; do not add an extra enclosing project folder.
-8. Check the file list. It should contain source, docs and tests. It should not contain recordings, patient case exports, node_modules, .git, .env or credentials. Browser uploads do not use .gitignore to remove files that you select manually.
-9. Use the commit message **Add hosted Vaidya Setu MVP and updated PRD**. A commit means a saved version. Click **Commit changes** or **Propose changes**; complete any branch and pull request flow GitHub presents.
-10. Open the repository homepage. Its README already has **Open the live demo** at the top and links to the PRD and research.
-11. In the repository's **About** section, use its settings control to add this Website URL: **https://vaidya-setu-review-lab.akshata-urs.chatgpt.site/**. This gives visitors another direct route to the product.
-12. Open the GitHub link in a signed out or private browser window. Confirm that the files are visible, the README opens and its live demo link works. Test the fictional example without signing in.
-13. Copy your actual repository URL to your resume. Its form is **https://github.com/YOUR_USERNAME/vaidya-setu-web**; replace YOUR_USERNAME with your account name. Do not use that placeholder as your actual link.
+The package is within the browser limit of 100 files per upload and 25 MiB per file. Official [GitHub upload instructions](https://docs.github.com/en/repositories/working-with-files/managing-files/adding-a-file-to-a-repository) describe upload and commit options.
 
-The prepared export is within GitHub's browser limits of 100 files per upload and 25 MiB per file. See the official [repository quickstart](https://docs.github.com/en/repositories/creating-and-managing-repositories/quickstart-for-repositories) and [upload instructions](https://docs.github.com/en/repositories/working-with-files/managing-files/adding-a-file-to-a-repository).
+If your repository contains only the earlier Python/Streamlit app, this is the newer web implementation. Keep the Python version clearly labelled as a legacy implementation rather than describing its test results as website results. The new README identifies the web entry points. Do not delete unrelated work to upload this package.
+
+## If you have not uploaded anything yet
+
+Create one repository named **vaidya-setu-web**, choose **Public**, and leave generated README and ignore-file options off because the package supplies them. Then follow steps 4 onward above. Public means recruiters can view code and documents without your permission; it does not let them edit your repository. Archive access is restricted to the signed-in owner; two-account acceptance testing remains pending.
+
+## Retry the saved recording on the website
+
+1. Open the live website and press **Ctrl + Shift + R**. Check the sidebar says **0.3.2-web**.
+2. Sign in to the same account used for the original upload. Enter your Sarvam key again in **API settings**. Refresh clears the key; it does not delete archived cases. The optional connection test makes a small billable chat request and does not verify every service.
+3. Open **Evaluation archive** and choose the failed case. Click **Resume transcription** under Source conversation. The app reuses its saved recording and checks the existing job. An accepted job can retry upload/start; a pending, running or completed job is reused. A terminal failed job can be replaced.
+4. Keep the page open while it checks progress. Transcription is followed by medication extraction. If it is still running, reopen the same case and resume; avoid repeatedly creating duplicate consultations.
+5. Check the medication table against the recording, save corrections and confirm any suggested route. Use Source & evaluation to mark facts as stated, not mentioned, unclear or unreviewed, and save a source-checked reference.
+6. Approval, translation/back translation, bilingual review, speech generation and listening review are later steps. Live Sarvam processing and your actual recording have not been rerun by the author. Downloading WAV does not send a WhatsApp message.
+
+## Video guide
+
+The separate narrated MP4 demonstrates these steps. GitHub and private-archive screens are clearly labelled illustrations. Public website screenshots and the fictional evaluation example were captured from version 0.3.2. No real API key or private patient recording appears, and no live transcription success is claimed.
 
 ## What to include
 
@@ -39,7 +59,7 @@ The prepared export is within GitHub's browser limits of 100 files per upload an
 | app, components, lib, db and migrations | The current hosted implementation |
 | PRD in Word, PDF and Markdown | Product decisions, scope, success metrics and acceptance criteria |
 | Market research | Dated numerical evidence and source links |
-| Tests and sanitized software log | 32 automated checks with their evidence boundaries |
+| Tests and sanitized software log | 43 automated checks plus a Workers runtime smoke check with their evidence boundaries |
 | Manual acceptance log | Completed anonymous checks and explicit not run entries |
 | Setup and build files | How the application is organized and reproduced |
 
@@ -51,7 +71,7 @@ Keep real patient recordings, prescriptions, transcripts, exported case JSON, AP
 
 Designed a multilingual recorded consultation review MVP using Sarvam APIs, with medication field evaluation, explicit review controls, route provenance and private correction history. Published a public fictional demo; real recording accuracy and clinical validation remain pending.
 
-Make GitHub link to your repository and Live demo link to the existing website. This package has not been uploaded to your GitHub account automatically.
+Make GitHub link to your repository and Live demo link to the existing website. This package has not been uploaded to your GitHub account automatically. The current hosted source commit is 17d38e5df0e1b7342e430d0cf7e4586a6ffaa3bc.
 
 ## Keep later updates clear
 

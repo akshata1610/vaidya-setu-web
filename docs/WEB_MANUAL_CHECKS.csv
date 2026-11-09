@@ -16,3 +16,5 @@ P14,"Translation, audio listening and download",Not run,Needs a key and suitable
 P15,Stale second-tab save,Not run,Needs signed-in concurrent test tabs.,,0.3.1-web,,Not established
 P16,Delete a disposable archived case,Not run,Needs an explicitly disposable signed-in test case.,,0.3.1-web,,Not established
 P17,Clear a selected real WAV input,Not run,Needs signed-in browser file selection test.,,0.3.1-web,,Not established
+P18,Published 0.3.2 visible,Pass,Public live page showed version 0.3.2-web in the sidebar on 8 November 2026.,2026-11-08,0.3.2-web,Chrome cloud browser,Fictional / anonymous only
+P19,0.3.2 fictional evaluation walkthrough,Pass,Prepared dose reference matched 1 tablet; unstated blank route gave correctly blank; partial reference and local-only labels remained.,2026-11-08,0.3.2-web,Chrome cloud browser,Fictional / anonymous only

@@ -91,7 +91,7 @@ export async function POST(request:Request){
   const api=new Sarvam(request.headers.get("x-sarvam-key")??"",c);const t=Date.now();providerAction=true;
   if(b.action==="transcribe"){
    if(c.transcript||!c.sourceKey||!c.audioInfo)throw new Error("This case does not need a new transcription.");const file=await bucket().get(c.sourceKey);if(!file)throw new Error("Source recording not found.");const result=await api.startAudio(new Blob([await file.arrayBuffer()],{type:"audio/wav"}),c.audioInfo);
-   if(result.result)verifyTranscript(result.result,c);else{c.jobId=result.jobId;c.status="transcribing";}c.timings!.stt_start_ms=Date.now();
+   if(result.result)verifyTranscript(result.result,c);else{c.jobId=result.jobId;c.status="transcribing";}c.timings!.stt_start_ms??=Date.now();
   }else if(b.action==="poll"){
    if(!c.jobId||c.transcript)throw new Error("No pending transcription job.");const result=await api.poll(c.jobId);if(result.pending)return json({case:c,pending:true});verifyTranscript(result.result,c);c.timings!.stt_ms=Date.now()-(c.timings!.stt_start_ms??t);
   }else if(b.action==="extract"){

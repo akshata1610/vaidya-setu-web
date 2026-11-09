@@ -8,10 +8,17 @@ Public visitors can try a prepared fictional example without signing in or enter
 
 ## Project documents
 
-- [PRD: read on GitHub](docs/PRD.md) · [PDF](docs/Vaidya_Setu_MVP_PRD.pdf) · 
+- [PRD: read on GitHub](docs/PRD.md) · [PDF](docs/Vaidya_Setu_MVP_PRD.pdf) · [editable Word document](docs/Vaidya_Setu_MVP_PRD.docx)
 - [India teleconsultation research and primary sources](docs/MARKET_RESEARCH.md)
 - [Manual acceptance log: completed and pending checks](docs/WEB_MANUAL_CHECKS.csv)
-- [Automated software check log](evidence/WEB_TEST_LOG.txt)
+- [GitHub upload instructions for beginners](docs/GITHUB_UPLOAD_GUIDE.md)
+- [Release notes for 0.3.2](docs/RELEASE_NOTES_0.3.2.md)
+- [Automated software check log](evidence/WEB_TEST_LOG.txt) · [Workers runtime check](evidence/BATCH_WORKER_SMOKE_LOG.txt)
+- [Narrated video transcript](docs/VIDEO_TRANSCRIPT.md)
+
+## Recording recovery in this release
+
+The batch recording upload and transcript download now use Worker-compatible manual redirect handling. Resume checks the saved job and retries an interrupted upload/start; it does not only poll an unstarted job. The source recording and prior error remain available for review. The separate Workers smoke check reproduces the old runtime error and passes the recovery flow using fixture responses. No real Sarvam key or private patient recording is used by these tests.
 
 ## What the MVP does
 
@@ -25,10 +32,10 @@ Public visitors can try a prepared fictional example without signing in or enter
 
 ## Evidence and boundaries
 
-Version **0.3.1-web**, dated **8 November 2026**. The hosted web edition is separate from the earlier Python/Streamlit app. Its 53 earlier checks are not included in this website's results.
+Version **0.3.2-web**, dated **8 November 2026**. The hosted web edition is separate from the earlier Python/Streamlit app. Its 53 earlier checks are not included in this website's results.
 
-- **32 automated checks passed**, using fictional fixtures and mocked provider responses. TypeScript checking and the production build passed.
-- **7 public/anonymous browser checks passed**. The manual log separately marks ten checks not run.
+- **43 automated checks passed**, using fictional fixtures and mocked provider responses. TypeScript checking and the production build passed.
+- The manual log retains **7 earlier anonymous checks for 0.3.1**, plus **2 observed checks for 0.3.2** (published version and fictional evaluation). Ten earlier acceptance checks remain not run; the log is version-specific.
 - No real Sarvam key, complete signed-in live-API workflow, two-account isolation test, clinical benchmark or bilingual audio assessment was completed during authoring.
 
 The product assists human review of stated instructions. It does not independently prescribe, verify clinician qualifications, check dose safety or interactions, issue a signed prescription, provide live interpretation, or automatically send WhatsApp messages. Downloadable WAV is not native WhatsApp voice-note delivery. The app does not claim clinical accuracy or patient benefit.
@@ -41,14 +48,15 @@ Keys remain in page memory and are cleared by refresh; they are not saved to the
 
 ## Source and development
 
-This export matches hosted source commit `09250ce327962abc1e0a2c6b631a91b094145c51`, with this README and the project documents added for GitHub. Unused starter examples and UI components are omitted. The app uses TypeScript, React, the Vinext starter, a Worker backend, D1 and private R2. Application code is in `app`, `components/lab.tsx` and `lib`; migrations are in `drizzle`.
+This export matches hosted source commit `17d38e5df0e1b7342e430d0cf7e4586a6ffaa3bc`, with this README and the project documents added for GitHub. Unused starter examples and UI components are omitted. The app uses TypeScript, React, the Vinext starter, a Worker backend, D1 and private R2. Application code is in `app`, `components/lab.tsx` and `lib`; migrations are in `drizzle`.
 
 For developers: use Node 22.13+ and the lockfile's pnpm version. Install with `pnpm install --frozen-lockfile`, then use `pnpm run dev` or `pnpm run build`. Full private functionality also requires the hosting environment's ChatGPT identity, D1 and R2 bindings; copying files alone does not provision those services. `.openai/hosting.json` contains non-secret project/binding metadata, not deployment credentials. A fresh provider/account needs its own provisioning and authentication configuration.
 
 Run the software checks after installing dependencies:
 
 ```sh
-node --experimental-transform-types --test tests/domain.test.mjs tests/public-demo.test.mjs
+node --experimental-transform-types --test tests/domain.test.mjs tests/public-demo.test.mjs tests/batch-transcription.test.mjs
+node tests/batch-worker-smoke.mjs
 node node_modules/typescript/bin/tsc --noEmit
 ```
 

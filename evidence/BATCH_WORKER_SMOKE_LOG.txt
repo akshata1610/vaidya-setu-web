@@ -1,0 +1,1 @@
+PASS: actual Workers runtime reproduces the old redirect error and completes saved-job recovery, upload, download and medication extraction with fixture responses.

@@ -19,6 +19,17 @@ export class Sarvam {
   finally {if(this.c&&!path.includes("chat/completions"))this.c.activity?.push({service:path,status,at:new Date().toISOString(),milliseconds:Date.now()-t});}
  }
  async test(){const d=await this.call("/v1/chat/completions",{model:"sarvam-105b",reasoning_effort:null,max_tokens:64,temperature:0,messages:[{role:"user",content:"Reply with the single word OK."}]});if(!d.choices?.[0]?.message?.content||!["stop",null,undefined].includes(d.choices[0].finish_reason))throw new Error("The key was accepted but the test answer was incomplete.");return {status:"Sarvam responded using this key",service:"Chat",billable:true};}
+ private async transfer(url:string,options:RequestInit,label:string){
+  if(!isTrustedFileURL(url))throw new Error(`Batch ${label} returned an unsupported file host.`);
+  try{
+   // Workers supports manual/follow, not redirect:error. Keep signed file URLs
+   // on their validated host and reject redirect responses ourselves.
+   const response=await this.fetcher(url,{...options,redirect:"manual"});
+   if(response.status>=300&&response.status<400){await response.body?.cancel();throw new ProviderError(`Batch ${label} returned a redirect. No file was accepted. Resume transcription to retry.`);}
+   if(!response.ok){await response.body?.cancel();throw new ProviderError(`Batch ${label}: HTTP ${response.status}. No file was accepted. Resume transcription to retry.`,response.status);}
+   return response;
+  }catch(e){if(e instanceof ProviderError)throw e;throw new ProviderError(`Batch ${label} could not finish. Check the connection and resume transcription. Your source recording remains saved.`);}
+ }
  async extract(transcript:string){
   if(!transcript.trim()||transcript.length>50000)throw new Error("Use a transcript of 1–50,000 characters.");
   const textFields=[...FIELDS,"evidence_quote","speaker","review_reason"];
@@ -39,17 +50,26 @@ export class Sarvam {
  }
  async startAudio(file:Blob,info:{seconds:number}){
   if(info.seconds<29){const f=new FormData();f.set("file",file,"consultation.wav");f.set("model","saaras:v4");f.set("mode","codemix");f.set("language_code","unknown");f.set("with_timestamps","true");return {result:await this.call("/speech-to-text",f)};}
-  const job=await this.call("/speech-to-text/job/v1",{job_parameters:{model:"saaras:v4",mode:"codemix",language_code:"unknown",with_diarization:true}});
-  if(typeof job.job_id!=="string")throw new Error("Batch STT returned no job identity.");
+  let jobId=this.c?.jobId;
+  if(jobId){
+   const previous=await this.call("/speech-to-text/job/v1/"+encodeURIComponent(jobId)+"/status",undefined,"GET");
+   if(["Pending","Running","Completed","PartiallyCompleted"].includes(previous.job_state))return {jobId};
+   if(previous.job_state==="Failed")jobId=undefined;
+   else if(previous.job_state!=="Accepted")throw new Error("The saved transcription job has an unknown state. Check its status in your Sarvam dashboard.");
+  }
+  if(!jobId){
+   const job=await this.call("/speech-to-text/job/v1",{job_parameters:{model:"saaras:v4",mode:"codemix",language_code:"unknown",with_diarization:true}});
+   if(typeof job.job_id!=="string"||!job.job_id)throw new Error("Batch STT returned no job identity.");
+   jobId=String(job.job_id);
+  }
   // Retain the remote job identity even if upload/start fails, for safe troubleshooting.
-  if(this.c)this.c.jobId=job.job_id;
-  const urls=await this.call("/speech-to-text/job/v1/upload-files",{job_id:job.job_id,files:["consultation.wav"]});
+  if(this.c)this.c.jobId=jobId;
+  const urls=await this.call("/speech-to-text/job/v1/upload-files",{job_id:jobId,files:["consultation.wav"]});
   const url=urls.upload_urls?.["consultation.wav"]?.file_url;
-  if(!isTrustedFileURL(url))throw new Error("Batch STT returned an unsupported upload host.");
-  const up=await this.fetcher(url,{method:"PUT",headers:{"Content-Type":"audio/wav",...(url.includes(".blob.core.windows.net")?{"x-ms-blob-type":"BlockBlob"}:{})},body:file,signal:AbortSignal.timeout(110000),redirect:"error"});
-  if(!up.ok)throw new Error("The batch recording upload failed. No transcript accepted.");
-  await this.call("/speech-to-text/job/v1/"+encodeURIComponent(job.job_id)+"/start",{});
-  return {jobId:job.job_id};
+  const up=await this.transfer(url,{method:"PUT",headers:{"Content-Type":"audio/wav",...(typeof url==="string"&&new URL(url).hostname.endsWith(".blob.core.windows.net")?{"x-ms-blob-type":"BlockBlob"}:{})},body:file,signal:AbortSignal.timeout(110000)},"recording upload");
+  await up.body?.cancel();
+  await this.call("/speech-to-text/job/v1/"+encodeURIComponent(jobId)+"/start",{});
+  return {jobId};
  }
  async poll(jobId:string){
   const d=await this.call("/speech-to-text/job/v1/"+encodeURIComponent(jobId)+"/status",undefined,"GET");
@@ -59,9 +79,7 @@ export class Sarvam {
   if(files.length!==1)throw new Error("Expected exactly one completed batch JSON transcript.");
   const links=await this.call("/speech-to-text/job/v1/download-files",{job_id:jobId,files});
   const url=links.download_urls?.[files[0]]?.file_url;
-  if(!isTrustedFileURL(url))throw new Error("Batch STT returned an unsupported result host.");
-  const r=await this.fetcher(url,{signal:AbortSignal.timeout(45000),redirect:"error"});
-  if(!r.ok)throw new Error("Could not download the batch transcript.");
+  const r=await this.transfer(url,{signal:AbortSignal.timeout(45000)},"transcript download");
   const text=await r.text();if(text.length>700000)throw new Error("Batch transcript exceeds this pilot's result limit.");
   return {result:JSON.parse(text)};
  }

@@ -1,4 +1,4 @@
-export const VERSION = "0.3.1-web";
+export const VERSION = "0.3.2-web";
 export const FIELDS = ["drug_name","action","form","strength","dose","route","frequency","time_of_day","meal_timing","duration"] as const;
 export type Field = typeof FIELDS[number];
 export const LABELS: Record<Field,string> = {drug_name:"Medicine",action:"Action",form:"Dosage form",strength:"Strength",dose:"Amount per dose",route:"Route",frequency:"Frequency",time_of_day:"Time of day",meal_timing:"Food timing",duration:"Duration"};
