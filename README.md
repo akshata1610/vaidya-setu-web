@@ -10,7 +10,7 @@ Public visitors can try a prepared fictional example without signing in or enter
 
 **[Watch the latest website demo (4:24)](Vaidya_Setu_Website_Demo.mp4)** · **[Read the transcript and navigation steps](docs/VIDEO_TRANSCRIPT.md)**
 
-Updated **10 November 2026** · 1080p with captions · Neerja Expressive (Indian English).
+Updated **10 November 2026**
 
 Follow the website journey from sign-in and consultation upload through medication review, extraction evaluation, translated-script approval, audio download and saved cases. The walkthrough shows website version **0.3.3-web** using a sample consultation; API-dependent steps are explained rather than demonstrated with live processing.
 
