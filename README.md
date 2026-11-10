@@ -6,6 +6,14 @@ A portfolio MVP for reviewing medication instructions from a completed doctor–
 
 Public visitors can try a prepared fictional example without signing in or entering an API key. Actual uploads, model requests and saved cases require ChatGPT sign-in and the visitor's own Sarvam key. Archives are scoped to their signed-in owner. Public fictional examples run only in browser memory and disappear on refresh.
 
+## Website walkthrough
+
+**[Watch the latest website demo (4:24)](Vaidya_Setu_Website_Demo.mp4)** · **[Read the transcript and navigation steps](docs/VIDEO_TRANSCRIPT.md)**
+
+Updated **10 November 2026** · 1080p with captions · Neerja Expressive (Indian English).
+
+Follow the website journey from sign-in and consultation upload through medication review, extraction evaluation, translated-script approval, audio download and saved cases. The walkthrough shows website version **0.3.3-web** using a sample consultation; API-dependent steps are explained rather than demonstrated with live processing.
+
 ## Project documents
 
 - [PRD: read on GitHub](docs/PRD.md) · [PDF](docs/Vaidya_Setu_MVP_PRD.pdf) · [editable Word document](docs/Vaidya_Setu_MVP_PRD.docx)
@@ -60,4 +68,4 @@ node node_modules/typescript/bin/tsc --noEmit
 
 ## GitHub and the live website
 
-The GitHub repository contains source and documentation. Its Live demo link opens the separately hosted product. GitHub Pages is static hosting and cannot run this backend. Committing here does not automatically redeploy the existing website. This package has not been uploaded to your GitHub account automatically.
+The GitHub repository contains source and documentation. Its Live demo link opens the separately hosted product. GitHub Pages is static hosting and cannot run this backend. Committing here does not automatically redeploy the existing website.
