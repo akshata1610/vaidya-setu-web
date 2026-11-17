@@ -1,23 +1,38 @@
-export const VERSION = "0.3.2-web";
+import type { AudioSegment } from "./audio-evidence.ts";
+import { englishDigits, isMealOnly, untranslatedMedicationFields } from "./medication-fields.ts";
+import { spokenMedicationInstruction } from "./voice-instructions.ts";
+
+export const VERSION = "0.3.4-web";
 export const FIELDS = ["drug_name","action","form","strength","dose","route","frequency","time_of_day","meal_timing","duration"] as const;
 export type Field = typeof FIELDS[number];
-export const LABELS: Record<Field,string> = {drug_name:"Medicine",action:"Action",form:"Dosage form",strength:"Strength",dose:"Amount per dose",route:"Route",frequency:"Frequency",time_of_day:"Time of day",meal_timing:"Food timing",duration:"Duration"};
+export const LABELS: Record<Field,string> = {drug_name:"Medicine",action:"Doctor’s instruction",form:"Dosage form",strength:"Strength",dose:"Amount per dose",route:"Route",frequency:"How often",time_of_day:"Time of day",meal_timing:"Timing relative to meals",duration:"Duration"};
 export const ACTIONS = ["prescribe","continue","stop","discussed","unclear"];
+export const ACTION_LABELS:Record<string,string>={prescribe:"Take as prescribed",continue:"Continue existing medicine",stop:"Stop this medicine",discussed:"Mentioned only — not prescribed",unclear:"Not stated / unclear — confirm"};
 export const MEALS = ["before_food","after_food","with_food","empty_stomach","no_food_instruction","not_applicable"];
+export const MEAL_LABELS: Record<string, string> = {
+ before_food: "Before meals", after_food: "After meals", with_food: "With meals",
+ empty_stomach: "On an empty stomach", no_food_instruction: "No meal instruction", not_applicable: "Not applicable",
+};
+export const VOICE_LANGUAGES = { "kn-IN": "Kannada", "hi-IN": "Hindi", "en-IN": "English" } as const;
+export type VoiceLanguage = keyof typeof VOICE_LANGUAGES;
+export function isVoiceLanguage(value: unknown): value is VoiceLanguage {
+ return typeof value === "string" && Object.hasOwn(VOICE_LANGUAGES, value);
+}
 export type Medicine = Record<Field,string|null> & {id:string; evidence_quote:string|null; speaker:string|null; review_reason:string|null};
 export type Annotation = {state:"unreviewed"|"stated"|"not_mentioned"|"unclear"; value:string|null};
 export type Reference = Record<string,{presence:"unreviewed"|"in_plan"|"not_in_plan"; fields:Partial<Record<Field,Annotation>>}>;
 export type RouteDecision = {value:string; confirmed:boolean; basis:"form_suggestion"|"reviewer_confirmed"};
 export type LabCase = {
  id:string;title:string;kind:"human_audio"|"roleplay_audio"|"pasted"|"fictional";status:string;revision:number;created:string;updated:string;
- language:"kn-IN"|"hi-IN"|"en-IN"; transcript:string; transcriptReview?:string; detectedLanguage?:string;
+ language?:VoiceLanguage; transcript:string; transcriptReview?:string; detectedLanguage?:string;
  original:Medicine[]; reviewed:Medicine[]; reference:Reference; referenceVerified:boolean; referenceReviewer:string;
  draftSource?:"prepared"|"sarvam";
  localOnly?:boolean;
  routes:Record<string,RouteDecision>; notes:string[]; reviewer:string; reviewAcknowledged:boolean;
  sourceKey?:string; audioInfo?:{seconds:number;rate:number;channels:number}; jobId?:string; sttRaw?:unknown;
+ audioSegments?: AudioSegment[];
  draftRuns?:{at:string;transcript:string;medicines:Medicine[]}[];
- approval?:{at:string;hash:string;reviewer:string}; lines?:{id:string;english:string;native:string;back?:string}[];
+ approval?:{at:string;hash:string;reviewer:string;version?:2}; lines?:{id:string;english:string;native:string;back?:string}[];
  scriptReviewed?:boolean; scriptWarnings?:string[]; audioKey?:string; listened?:boolean;
  error?:string; timings?:Record<string,number>; consent:{at:string;version:string};
  activity?:{service:string;status:string;at:string;milliseconds:number;finish?:string;tokens?:number}[];
@@ -56,14 +71,43 @@ export function routeSuggestion(m:Medicine) {
  return {value:null,source:"unknown" as const,reason:"No conservative route suggestion. Confirm from the source or an authorised reviewer."};
 }
 export function effectiveRoute(c:LabCase,m:Medicine){return m.route|| (c.routes[m.id]?.confirmed?c.routes[m.id].value:null);}
-export function invalidate(c:LabCase){delete c.approval;delete c.lines;delete c.scriptWarnings;delete c.audioKey;c.scriptReviewed=false;c.listened=false;c.status=c.original.length?"draft":c.status;}
+export function invalidateVoice(c: LabCase) {
+ delete c.lines;delete c.scriptWarnings;delete c.audioKey;c.scriptReviewed=false;c.listened=false;
+}
+export function invalidate(c:LabCase){delete c.approval;invalidateVoice(c);c.status=c.original.length?"draft":c.status;}
+export function requiredMedicationFields(medicine: Medicine): Field[] {
+ const required: Field[] = ["action"];
+ if (medicine.action !== "discussed") required.push("drug_name");
+ if (medicine.action === "prescribe" || medicine.action === "continue") {
+  required.push("dose", "route", "frequency", "duration");
+ }
+ return required;
+}
+export function missingMedicationFields(c: LabCase, medicine: Medicine) {
+ return requiredMedicationFields(medicine).filter(field => {
+  if (field === "action") return !medicine.action || medicine.action === "unclear";
+  if (field === "route") return !effectiveRoute(c, medicine)?.trim();
+  return !medicine[field]?.trim();
+ });
+}
 export function approvalProblems(c:LabCase){
  const p:string[]=[];
  if(!c.reviewed.length)p.push("No medicine records to approve.");
  for(const [i,m] of c.reviewed.entries()){
-  const label=`Medicine ${i+1}`;
-  if(!m.drug_name)p.push(label+": medicine name is missing.");
-  if(m.action==="unclear")p.push(label+": clarify the action.");
+  const label=m.drug_name?.trim()||`Medicine ${i+1}`;
+  const required = missingMedicationFields(c, m);
+  for (const field of required) {
+   if (field === "action") p.push(label + ": clarify the doctor’s instruction (action).");
+   else if (field === "drug_name") p.push(label + ": medicine name is missing. Check the recording or confirm with the clinician.");
+   else if (field === "route") p.push(label + ": enter or confirm the route.");
+   else p.push(label + ": complete " + LABELS[field].toLowerCase() + ".");
+  }
+  if (m.action !== "discussed") {
+   for (const field of untranslatedMedicationFields(m)) p.push(label + ": enter " + LABELS[field].toLowerCase() + " in English.");
+   if (requiredMedicationFields(m).includes("frequency") && m.frequency && (isMealOnly(m.frequency) || /^\d+$/u.test(englishDigits(m.frequency.trim())))) {
+    p.push(label + ": enter how often to give a dose, such as twice daily or every 8 hours.");
+   }
+  }
   if(c.referenceVerified){
    const ref=c.reference[m.id];
    if(ref?.presence==="not_in_plan"&&["prescribe","continue","stop"].includes(m.action??""))p.push(label+": the verified reference excludes this medicine from the final plan.");
@@ -72,12 +116,9 @@ export function approvalProblems(c:LabCase){
     if(a?.state==="not_mentioned"&&m[f])p.push(label+": "+LABELS[f]+" is not supported by the verified source. Keep inferred route decisions separate.");
    }
   }
-  if(["prescribe","continue"].includes(m.action??"")){
-   for(const f of ["dose","frequency","duration"] as Field[])if(!m[f])p.push(label+": confirm "+LABELS[f].toLowerCase()+".");
-   if(!effectiveRoute(c,m))p.push(label+": route needs confirmation; suggestions are not automatically accepted.");
-  }
  }
- if(!c.reviewer.trim()||!c.reviewAcknowledged)p.push("Record the reviewer's name and source-review acknowledgement.");
+ if(!c.reviewer.trim())p.push("Enter the reviewer’s name.");
+ if(!c.reviewAcknowledged)p.push("Confirm that you checked the instructions against the source.");
  return p;
 }
 export function evaluate(c:LabCase){
@@ -102,14 +143,27 @@ export function evaluate(c:LabCase){
  return {cells,checked,correct:count("correct"),incorrect:count("incorrect")+count("missed"),correctlyBlank:count("correctly_blank"),unsupported:count("unsupported"),missed,extra,medicinesChecked,
  fullyAnnotated:allPresence&&cells.every(x=>!["unreviewed","unclear"].includes(x.status))&&checked>0};
 }
-export function englishLines(c:LabCase){
- const meal:Record<string,string>={before_food:"Before food.",after_food:"After food.",with_food:"With food.",empty_stomach:"On an empty stomach.",no_food_instruction:"No food instruction was specified.",not_applicable:""};
- return c.reviewed.filter(m=>["prescribe","continue","stop"].includes(m.action??"")).map(m=>({id:m.id,english:m.action==="stop"?`Stop ${m.drug_name}.`:[m.action==="continue"?"Continue":"Take",m.drug_name,m.form,m.strength,m.dose?`Amount per dose: ${m.dose}.`:null,`Route: ${effectiveRoute(c,m)}.`,m.frequency?`Frequency: ${m.frequency}.`:null,m.time_of_day?`Time: ${m.time_of_day}.`:null,m.duration?`Duration: ${m.duration}.`:null,m.meal_timing?meal[m.meal_timing]:null].filter(Boolean).join(" "),native:""}));
+export function englishLines(c: LabCase) {
+ return c.reviewed
+  .filter(medicine => ["prescribe", "continue", "stop"].includes(medicine.action ?? ""))
+  .map(medicine => ({
+   id: medicine.id,
+   english: spokenMedicationInstruction(medicine, effectiveRoute(c, medicine)),
+   native: "",
+  }));
 }
-export function requireFreshRevision(actual:number,expected:unknown){if(actual!==expected)throw new Error("CONFLICT: This case changed in another tab. Reopen it before saving.");}
+export class CaseRevisionConflict extends Error {
+ constructor(readonly retryable = false) {
+  super("A newer version of this case is available. Load the latest saved version to continue.");
+  this.name = "CaseRevisionConflict";
+ }
+}
+export function requireFreshRevision(actual: number, expected: unknown) {
+ if (actual !== expected) throw new CaseRevisionConflict();
+}
 export function requireOwned(owner:string,user:string){if(owner!==user)throw new Error("NOT_FOUND");}
 export function isTrustedFileURL(value:string){try{const u=new URL(value);return u.protocol==="https:"&&!u.username&&!u.password&&(/\.blob\.core\.windows\.net$/.test(u.hostname)||/\.amazonaws\.com$/.test(u.hostname)||u.hostname==="storage.googleapis.com"||/\.sarvam\.ai$/.test(u.hostname));}catch{return false;}}
-export function numericTokens(s:string){return s.normalize("NFKC").replace(/[०-९]/g,c=>String(c.charCodeAt(0)-0x966)).replace(/[೦-೯]/g,c=>String(c.charCodeAt(0)-0xce6)).match(/\d+(?:\.\d+)?/g)?.sort().join("|")??"";}
+export function numericTokens(s:string){return englishDigits(s.normalize("NFKC")).match(/\d+(?:\.\d+)?/g)?.sort().join("|")??"";}
 export function wavInfo(buffer:ArrayBuffer,total:number){
  if(total>30*1024*1024||total<44)throw new Error("Use a PCM WAV under 30 MB.");
  const v=new DataView(buffer);const str=(o:number,n:number)=>String.fromCharCode(...new Uint8Array(buffer,o,n));

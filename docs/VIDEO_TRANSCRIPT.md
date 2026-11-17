@@ -10,23 +10,26 @@ The walkthrough begins with the patient problem, then follows the user's journey
 
 The screens use a sample consultation. No real patient recording, live API processing or patient audio generation was performed for this video; the later API-dependent steps are explained. This is stated briefly outside the action list. The MVP's approval is a simulated review acknowledgement and WhatsApp delivery is not automatic.
 
-## Steps to follow
+## Steps for the current website
 
-1. **Set up:** Sign in with ChatGPT. Open **API settings**, enter your Sarvam key, and click **Done**. The optional **Test API connection** sends a small billable chat request and checks chat access only. Refreshing clears the key.
-2. **Add a source:** In **Consultation**, use a case label without patient identifiers. Choose **Upload audio** and select a PCM WAV file, up to 10 minutes and 30 MB. Select recording type and the patient's confirmed output language, confirm permission, and click **Create medication draft**. Alternatively, select **Paste transcript**, paste the conversation, and complete the same form.
-3. **Review:** Open **Medication review** and expand **Source conversation**. Compare the draft with the source. Check medicine name, doctor's instruction, dosage form, strength, dose each time, route, frequency, timing and duration. Resolve unclear instructions; do not invent missing facts. Confirm route suggestions only after checking them. Use **Add missed medicine** if necessary. Enter the reviewer's name, acknowledge the review, and click **Save corrections**.
-4. **Evaluate extraction:** Open **Source & evaluation**. Mark whether each medicine belongs in the final plan. Annotate each field as **Explicitly stated**, **Not mentioned**, **Unclear in source**, or **Not reviewed**. Enter reference values when stated. Enter the reference reviewer's name, confirm the source check, and click **Save reference & evaluate original**. The result compares the original draft with the checked reference; later edits do not change that original score.
-5. **Approve:** Return to **Medication review**, save remaining edits, and click **Approve saved version**. Open **Patient audio**.
-6. **Check the translation:** With your key available, click **Generate translated script**. Check/edit the patient-language text, then click **Save script & back-translate**. A bilingual reviewer checks the actual translation, medicine names, numbers, units and timing, enters their name and acknowledgement, and clicks **Approve script**. Back-translation helps review but does not guarantee quality.
-7. **Listen and download:** Click **Generate voice preview**. Listen fully and check the audio against the reviewed script. Confirm the listening check and click **Record listening review**, then **Download reviewed WAV**.
-8. **Return to your work:** Use **Saved history** for a case's review events and **Evaluation archive** to search/reopen signed-in cases. **Clear / new session** resets the current workspace without deleting archived cases. **How it works** provides the website's written guide.
+These steps reflect **0.3.4-web**. The chapters and narration below describe the screens shown in the 10 November recording.
+
+1. Use **How it works** on the setup page to see the guide. Select **Sign in with ChatGPT**, enter your Sarvam API key and select **Continue to consultation**. Guests can try the fictional demo.
+2. Add an optional case alias. Upload a completed PCM WAV, up to 10 minutes and 30 MB, or go to the transcript page to upload a .txt file or paste the conversation. Confirm permission and select **Generate medication draft**.
+3. Compare the draft with **Source conversation**. Replay timestamps when available, correct the fields in English and fill the fields marked with an asterisk. Confirm any suggested route, enter the reviewer’s name and acknowledgement, and select **Save corrections**.
+4. Select **Approve & prepare prescription**, then **Print or save PDF** if a written copy is needed for clinician sign-off.
+5. For optional audio, select **Prepare voice instructions for the patient**, choose Kannada, Hindi or English and select **Prepare script for the patient**. Review the conversational wording and select **Save script & back-translate**. A bilingual reviewer checks the actual script and selects **Approve script**.
+6. Select **Generate voice instructions**. Listen against the reviewed script and select **Record listening review**, then **Download voice instructions (WAV)**.
+7. Return to **Evaluation archive** to reopen cases. Use **Source & evaluation** to compare the original extraction against a separate source check. **Saved history** shows the revision events.
 
 ## Useful field meanings
 
 | Field or result | Meaning |
 |---|---|
 | Strength | Medicine content in a tablet or measure. |
-| Dose each time | Quantity used on each occasion. |
+| Amount per dose | Quantity used on each occasion. |
+| How often | Dosing frequency, such as twice a day. |
+| Timing relative to meals | Whether to take it before, with or after food. |
 | Doctor's instruction | Take as prescribed; Continue existing medicine; Stop this medicine; Mentioned only — not prescribed; or Not stated / unclear — confirm. |
 | Route | How the medicine is used. A form-based suggestion is separate from a route stated in the conversation. |
 | Correctly blank | The source did not mention that detail and the original draft left it blank. |

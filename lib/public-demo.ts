@@ -7,13 +7,13 @@ export function makePublicDemo(variant:number,id:string,at:string):LabCase {
  const med={...emptyMedicine("m1"),...selected,action:"prescribe"};
  const transcript=`Doctor: Use ${med.drug_name} ${med.strength??""} ${med.form}. Amount per use is ${med.dose}, ${med.frequency}, for ${med.duration}. Patient: Thank you.`;
  med.evidence_quote=transcript.split(" Patient:")[0];
- return {id,title:"Public fictional preview",kind:"fictional",status:"draft",revision:0,created:at,updated:at,language:"kn-IN",transcript,original:[med],reviewed:structuredClone([med]),reference:{},referenceVerified:false,referenceReviewer:"",routes:{},notes:["Prepared fictional data. No AI request, recording upload or archive write. Changes remain in this tab and disappear on refresh."],reviewer:"",reviewAcknowledged:false,draftSource:"prepared",localOnly:true,consent:{at,version:"fictional-public-preview"}};
+ return {id,title:"Public fictional preview",kind:"fictional",status:"draft",revision:0,created:at,updated:at,transcript,original:[med],reviewed:structuredClone([med]),reference:{},referenceVerified:false,referenceReviewer:"",routes:{},notes:["Prepared fictional data. No AI request, recording upload or archive write. Changes remain in this tab and disappear on refresh."],reviewer:"",reviewAcknowledged:false,draftSource:"prepared",localOnly:true,consent:{at,version:"fictional-public-preview"}};
 }
 export function publicDemoAction(input:LabCase,action:string,payload:Record<string,any>,at:string):LabCase {
  if(!input.localOnly||input.kind!=="fictional")throw new Error("This preview only accepts local fictional cases.");
  const c=structuredClone(input);
  if(action==="review"){
-  c.reviewed=validateMedicines(payload.reviewed,true);c.routes=structuredClone(payload.routes??{});c.language=payload.language;c.reviewer=String(payload.reviewer??"");c.reviewAcknowledged=payload.reviewAcknowledged===true;c.referenceVerified=false;invalidate(c);
+  c.reviewed=validateMedicines(payload.reviewed,true);c.routes=structuredClone(payload.routes??{});c.reviewer=String(payload.reviewer??"");c.reviewAcknowledged=payload.reviewAcknowledged===true;c.referenceVerified=false;invalidate(c);
  }else if(action==="reference"){
   if(payload.referenceVerified&&!String(payload.referenceReviewer??"").trim())throw new Error("Enter who checked the fictional reference.");
   c.reference=structuredClone(payload.reference??{});c.referenceVerified=payload.referenceVerified===true;c.referenceReviewer=String(payload.referenceReviewer??"");
@@ -23,6 +23,6 @@ export function publicDemoAction(input:LabCase,action:string,payload:Record<stri
   c.approval={at,hash:"local-fictional-simulation",reviewer:c.reviewer};c.status="approved";
  }else if(action==="transcript"){
   c.transcriptReview=String(payload.transcript??"");invalidate(c);
- }else throw new Error("Sign in to use Sarvam, save cases or generate patient audio. The public preview makes no API calls.");
+ }else throw new Error("Sign in to use Sarvam, save cases or generate voice instructions for the patient.");
  c.revision++;c.updated=at;return c;
 }

@@ -5,27 +5,27 @@ Product requirements for public demonstration and private consultation review
 | Document field | Value |
 | --- | --- |
 | Product owner | Akshata Anil Urs |
-| Updated | 8 November 2026 |
-| PRD version | 3.1 |
-| Web application | 0.3.2 web |
+| Updated | 17 November 2026 |
+| PRD version | 3.2 |
+| Web application | 0.3.4-web |
 | Stage | Independent portfolio MVP built with AI assisted coding |
 | Live website | [Open Vaidya Setu](https://vaidya-setu-review-lab.akshata-urs.chatgpt.site/) |
 
-Vaidya Setu turns a completed consultation recording or pasted conversation into an editable medication draft. A reviewer checks the source, saves corrections and approves one exact version. The app then supports Kannada, Hindi or English script review and a WAV voice preview. An evaluation archive retains the original draft separately from corrections and source verified reference answers.
+Vaidya Setu turns a completed teleconsultation recording or transcript into an editable medication draft. The doctor checks the source and approves the saved review, which prepares a printable prescription for clinician sign-off. An optional voice step turns the approved details into spoken directions in Kannada, Hindi or English. The evaluation archive retains the original draft, corrections and source-verified reference answers.
 
-The hosted MVP offers a public fictional preview. Uploads, Sarvam calls, saved cases and recordings require ChatGPT sign in and are scoped to the signed in account. The public preview makes no model request or archive write. This product assists review of stated instructions; it does not independently prescribe, issue a signed prescription or establish clinical safety.
+Visitors can read **How it works** and try a fictional preview from the setup screen. Preview changes stay in the browser tab. Consultation processing and archived files require ChatGPT sign-in and are scoped to the signed-in account. Clinicians remain responsible for confirming, completing and signing the written prescription before sharing it.
 
 ## 1 Problem and intended outcome
 
 Patients and caregivers may need understandable, replayable instructions after a consultation. A language or terminology mismatch can complicate that task. A conversation to audio pipeline can introduce additional errors in drug names, strength, amount per dose, frequency, duration and timing.
 
-The MVP makes these transformations inspectable. Its intended outcome is a source checked medication explanation with a traceable review history. Whether this improves patient comprehension or reduces provider effort remains a research question.
+The MVP aims to reduce manual prescription typing after a teleconsultation. It gives the doctor a draft to check against the conversation and gives patients an optional explanation they can replay in their chosen language. Provider effort and patient comprehension remain outcomes to measure.
 
 ## 2 Users and product decisions
 
 | User | Task | Current support |
 | --- | --- | --- |
-| Recruiter or portfolio visitor | Understand the project without installation | Public fictional preview, research and explanation pages |
+| Recruiter or portfolio visitor | Understand the project without installation | How it works guide and public fictional preview |
 | Reviewer or demo operator | Check and correct medication facts | Source playback, transcript, editable records and saved revisions |
 | Bilingual reviewer | Check translated and spoken instructions | Script editing, back translation, warnings and audio preview |
 | Product evaluator | Distinguish extraction errors from missing source facts | Original draft, field annotations and archived outcomes |
@@ -33,7 +33,7 @@ The MVP makes these transformations inspectable. Its intended outcome is a sourc
 
 These are design roles, not findings from completed interviews. A typed reviewer name does not authenticate a clinician. Sign in establishes an account identity, not professional qualifications.
 
-The product starts with completed recordings so inputs and outputs can be inspected. It separates strength from dose, and time of day from food timing. It builds patient instructions from the approved table. Inferred route suggestions remain separate from spoken facts and extraction scores.
+The product starts with completed recordings or transcripts so reviewers can inspect the source. Strength records the amount in each unit. Amount per dose records the quantity taken at one time. How often records frequency, and Timing relative to meals records directions such as after food. The approved plan supplies the voice script. Reviewers confirm suggested routes separately from the source facts used for scoring.
 
 ## 3 Market evidence
 
@@ -57,16 +57,19 @@ Apollo's Health of the Nation 2026 report attributes **7.99 million digital cons
 
 | ID | Requirement and implemented behaviour | Boundary |
 | --- | --- | --- |
-| F01 | Public browsing and varied fictional previews | Preview changes remain in the browser tab and disappear on refresh |
+| F01 | Public How it works guide and varied fictional previews | Preview changes remain in the browser tab and disappear on refresh |
 | F02 | ChatGPT sign in for uploads, model requests and archives | Each operation must authorize the account; no owner invitation is needed once the site is public |
-| F03 | Completed PCM WAV up to 10 minutes and 30 MB, or pasted text | Pasted text is labelled as bypassing STT |
-| F04 | Short file REST STT and longer file batch STT | Open page polling; interrupted upload or start can resume from the saved source |
-| F05 | Up to 12 medication records with evidence and review notes | Unknown facts stay blank; model accuracy is unestablished |
-| F06 | Saved corrections and version bound simulated approval | Changed facts or language invalidate dependent outputs |
+| F03 | Optional case alias, then WAV upload, .txt upload or pasted transcript | PCM WAV up to 10 minutes and 30 MB. Text skips speech recognition. |
+| F04 | Saaras v4 transcribes short recordings through REST and longer recordings through batch jobs | Use timed phrases when the full transcript is blank. Resume interrupted jobs or supply a transcript from the saved case. |
+| F05 | Sarvam 105B drafts up to 12 medication records with source evidence | Seek to linked timestamps when available. The reviewer confirms uncertain names and may check medicine reference links. |
+| F06 | English review table with action-specific required fields, saved corrections and clinician review | Show missing fields on approval. Changes to the medication plan require fresh approval. |
 | F07 | Explicit route plus separate form based suggestions | Suggested routes require confirmation and never become spoken evidence |
 | F08 | Source annotations and original draft evaluation | A missing or unverified reference is not a pass |
-| F09 | Reviewed Kannada, Hindi or English script and WAV preview | Actual bilingual quality and pronunciation require assessment |
+| F09 | Optional Kannada, Hindi or English spoken script, back-translation and WAV export | Mayura v1 translates when needed. Bulbul v4 Flash reads the approved script. Record the listening check before download. |
 | F10 | Private archive, revision events, case JSON export and deletion | Latest 200 cases and 100 events per case are displayed; export uses the same event limit |
+| F11 | Printable prescription from the approved plan | The clinician fills in patient details and signs before sharing. |
+| F12 | Recovery when a voice action uses an older case revision | Reuse a saved script for the same approved plan and language. Offer the latest saved version for review when the plan changes. |
+| F13 | Responsive workspace and accurate How it works guide | Keep the desktop profile in view above the bottom edge. Let navigation scroll on short screens and place the profile in the mobile header. |
 
 The hosted edition does not implement live interpretation, automatic WhatsApp delivery, signed prescriptions, EMR integration, validated FHIR export, interaction or clinical dose checking, a background processing scheduler, FFmpeg OGG conversion or the Python folder benchmark. The earlier Python app remains a separate implementation.
 
@@ -74,19 +77,19 @@ The hosted edition does not implement live interpretation, automatic WhatsApp de
 
 ### Public visitor
 
-A visitor opens the Live demo link from GitHub, views the research and opens a prepared fictional example without signing in. They can edit its table, confirm a route suggestion and simulate review or field evaluation. The interface labels the data as prepared and the history as local. No anonymous upload, private archive access or billable API operation is allowed.
+A visitor opens the live site and selects **How it works** or **Try demo without signing in**. They can edit a fictional medication table, confirm a route, approve a fictional prescription and see example spoken wording. The guest demo uses browser-local data. Real uploads, private archives and Sarvam API calls require sign-in.
 
 ### Signed in consultation review
 
-1. The operator enters a Sarvam key and may test it with a small billable chat request. Entry alone is not verification of a working key or access to every service.
-2. The operator uses an alias, chooses the confirmed output language and acknowledges permission for upload, external processing and private archiving.
-3. The input is saved. STT and extraction outcomes, including failures, remain visible. The original transcript and accepted original extraction are retained.
-4. The reviewer checks the recording, evidence and medication fields. Saving creates a revision event. Clear or new session resets the active UI without deleting archived cases.
-5. Required gaps, unclear actions and unresolved route confirmation block approval. A verified reference that contradicts the current plan also blocks or revokes approval.
-6. Translation uses approved medication facts. The reviewer saves script edits, runs back translation and records bilingual review before generating speech.
-7. The reviewer listens, records that check and downloads WAV. Export does not claim that a WhatsApp message was sent.
+1. The operator selects **Sign in with ChatGPT**, enters a Sarvam key and selects **Continue to consultation**. API settings offers an optional small billable chat test.
+2. The operator enters an optional alias, uploads a completed WAV or goes to the transcript page for a plain-text file or pasted conversation. They confirm permission for upload, external processing and private archiving.
+3. **Generate medication draft** saves the input and runs transcription when needed, then extraction. If speech recognition fails, the saved recording supports a retry or a reviewer-supplied transcript.
+4. The reviewer checks the transcript and available recording timestamps, corrects the medication table in English and fills the fields marked with an asterisk for the selected action. **Save corrections** records the reviewer’s acknowledgement and the saved revision.
+5. **Approve & prepare prescription** validates the saved review and lists any required gaps. Approval opens the prescription for printing or saving as a PDF. The clinician completes and signs it before sharing.
+6. If audio is needed, the reviewer selects Kannada, Hindi or English in **Voice instructions for the patient**. Each medicine’s script combines approved dose, frequency, time, meal instructions and duration when supplied. The reviewer edits, back-translates and approves the script before generating the WAV.
+7. The reviewer listens, records the listening check and downloads the WAV. **Evaluation archive** and **Saved history** let the reviewer reopen the case and inspect its earlier revisions.
 
-Changing medicine facts, route decisions or language clears plan approval and dependent script or audio. Changing a translated script requires its review again. An extraction retry is bounded; explicitly truncated responses are not accepted as medication drafts.
+Changes to medication facts or route decisions clear approval and dependent voice outputs. Selecting another language and preparing a new script starts a fresh voice review while preserving the approved prescription. Editing the script requires a new script review. When a later save conflicts with the voice action, the site can reopen a matching saved script or let the reviewer load the latest case. A verified source reference that contradicts the plan also blocks or revokes approval.
 
 ## 6 Route suggestions and provenance
 
@@ -125,9 +128,9 @@ Prepared examples are excluded from archive quality counters. Human role plays, 
 
 | Metric | Current evidence or definition | Status |
 | --- | --- | --- |
-| Software checks | 43 passing checks using fictional fixtures and mocked provider responses | Verified development run for 0.3.2 web |
+| Software checks | 63 checks using fictional fixtures and mocked provider responses | Verified development run for 0.3.4-web |
 | Type and production build checks | TypeScript and deployable build complete successfully | Development verification |
-| Public access | Anonymous visitor can open the page and local demo; private API reads reject missing identity | Anonymous checks passed; account tests pending |
+| Public access | Visitors can open the guide and fictional demo from setup. Private API reads require identity. | Guest browsing tested. Two-account isolation remains pending. |
 | Archive outcomes | Counts of correct, incorrect or missed, correctly blank and unsupported fields against verified references | Implemented; no real recording performance claim |
 | Complete case accuracy | Fully correct, fully annotated cases divided by fully annotated cases, accounting for missed and extra medicines | Benchmark reporting remains future work |
 | Review burden | Number of edits and reviewer time before approval | Baseline and study pending |
@@ -135,7 +138,7 @@ Prepared examples are excluded from archive quality counters. Human role plays, 
 | Audio fidelity | Correctly spoken critical instructions compared with approved facts | Bilingual assessment pending |
 | Latency and cost | Actual stage timings and provider usage, including retries and review | Per run metadata exists; no aggregate latency or rupee claim |
 
-An additional Workers runtime check reproduces the former redirect error and completes recovery with fixtures. The Python app's 53 checks remain separate. These checks do not establish clinical accuracy, safety or benefit.
+Workers runtime checks cover batch transcription recovery and stale voice revision handling with fictional provider responses. The hosted build and the earlier Python app have separate test results. Clinical accuracy, safety and patient benefit require their own evaluation.
 
 ## 9 Manual acceptance checks
 
@@ -143,21 +146,25 @@ Record browser, date, application version, actual result and evidence. Expected 
 
 | Check | Expected result |
 | --- | --- |
-| Open signed out | Public page and research load without owner permission |
+| Open signed out | Setup, How it works and the fictional demo are available without sign-in |
 | Open two public examples | Prepared scenarios vary; no key or login is required |
 | Edit public example and refresh | Original remains separate; local changes disappear; no archive write |
 | Request archive signed out | API rejects access; no consultation data appears |
 | Sign in with another account | Its own archive appears; it cannot read the owner's cases or files |
-| Enter and test key | Entry is unverified; an explicit test reports the actual service result |
+| Enter and test key | Enter the key after ChatGPT sign-in. The optional connection test reports the chat service result. |
 | Upload supported 90 second WAV | Batch STT stage and extraction outcome are distinguishable |
+| Switch from recording to transcript | Optional case label precedes the upload. A .txt file populates the conversation field. |
+| Short desktop and narrow mobile viewport | Desktop profile remains visible above the bottom gap while navigation scrolls. Mobile profile appears in the header. |
 | Clear active session | File, text and current case clear; archived cases remain |
 | Save correction then reopen | Original value, correction and saved event remain available |
 | Annotate absent versus missed fact | Correctly blank, missed and unsupported outcomes stay distinct |
 | Confirm route suggestion | It is usable after review but stays excluded from extracted spoken facts |
-| Change approved facts or language | Prior dependent approvals and outputs are invalidated |
+| Complete required review fields | Incomplete fields block approval and are listed in the approval message. |
+| Approve a complete medication review | Printable prescription opens. Language selection is available in the optional voice step. |
+| Change approved facts or prepare another language | A medication change requires fresh plan approval. A new language requires a new script review. |
 | Edit script and regenerate | Back translation and bilingual review are required again |
 | Listen and export | Reviewed WAV and case JSON agree; no WhatsApp sending claim |
-| Use a stale second tab | A newer saved revision cannot be silently overwritten |
+| Prepare voice from a stale view | A matching saved script can reopen. A changed plan requires review of the latest saved version. |
 | Delete own test case | Website case data and archived files are removed; provider records are separate |
 
 A separate manual log in the package records release observations and keeps unexecuted tests marked not run. No real recording or patient outcome result is fabricated.
@@ -166,7 +173,7 @@ A separate manual log in the package records release observations and keeps unex
 
 | Surface | Access and storage rule |
 | --- | --- |
-| Public website | Fictional preview, research and explanatory material |
+| Public website | How it works guide and fictional preview |
 | Uploaded sources and archives | Sign in required; server queries include the authenticated owner ID |
 | Recordings and generated audio | Private file storage, served through an owner checked API |
 | API key | Kept in page memory and sent for model requests; not saved in the archive or browser storage |
@@ -185,4 +192,4 @@ Later work includes clinician sign off, operational controls, patient comprehens
 
 ## 12 Evidence register
 
-The package contains source code, 43 software checks, test logs, this PRD, market sources and upload instructions. Public files exclude patient records and credentials.
+The project contains source code, 63 software checks, test logs, this PRD, market sources and the website walkthrough. Public files exclude patient records and credentials.

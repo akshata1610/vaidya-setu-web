@@ -18,3 +18,7 @@ P16,Delete a disposable archived case,Not run,Needs an explicitly disposable sig
 P17,Clear a selected real WAV input,Not run,Needs signed-in browser file selection test.,,0.3.1-web,,Not established
 P18,Published 0.3.2 visible,Pass,Public live page showed version 0.3.2-web in the sidebar on 8 November 2026.,2026-11-08,0.3.2-web,Chrome cloud browser,Fictional / anonymous only
 P19,0.3.2 fictional evaluation walkthrough,Pass,Prepared dose reference matched 1 tablet; unstated blank route gave correctly blank; partial reference and local-only labels remained.,2026-11-08,0.3.2-web,Chrome cloud browser,Fictional / anonymous only
+
+P20,Public How it works guide,Pass,"The guide opened from setup and covered upload, review, prescription and voice instructions.",2026-11-17,0.3.4-web,Chrome cloud browser,Anonymous preview
+P21,Short desktop workspace,Pass,At 800 × 415 the entire profile was visible with a 56 pixel gap below it. The navigation region overflowed independently.,2026-11-17,0.3.4-web,Chrome cloud browser,Fictional signed-in layout fixture
+P22,Narrow mobile workspace,Pass,At 390 × 500 the profile appeared beside the brand and the guide fit the viewport without horizontal page scrolling.,2026-11-17,0.3.4-web,Chrome cloud browser,Fictional signed-in layout fixture

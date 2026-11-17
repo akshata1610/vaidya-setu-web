@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import "./lab-onboarding.css";
 
 export const metadata: Metadata = {
   title: "Vaidya Setu · Review Lab",
-  description: "Recorded consultations, reviewed medication instructions and a private evaluation history.",
+  description: "Turn a completed teleconsultation recording or transcript into a medication draft for doctor review.",
   icons: {
     icon: "/favicon.svg",
     shortcut: "/favicon.svg",
