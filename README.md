@@ -20,7 +20,7 @@ Public visitors can try a prepared fictional example without signing in or enter
 
 **[Watch the website demo (2:13)](https://github.com/user-attachments/assets/473f65de-0be7-4cb3-be6e-9af1cf3f11d6)** 
 
-Recorded on **10 November 2026** using a fictional consultation. The video shows the earlier **0.3.3-web** screens. Use the steps above for current button names.
+Recorded on **17 November 2026** using a fictional consultation. The video shows the earlier **0.3.4-web** screens. Use the steps above for current button names.
 
 ## Project documents
 
