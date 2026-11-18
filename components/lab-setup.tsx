@@ -129,9 +129,9 @@ export function LabSetup({
         <LabBrand />
         <button className="text-button" type="button" onClick={onGuide}>How it works <ArrowRight size={15} aria-hidden="true" /></button>
       </header>
-      <main className="setup-layout">
+      <main className={signedIn ? "setup-layout signed-in-setup" : "setup-layout"}>
         <div className="setup-intro">
-          <h1>From conversation to clarity.</h1>
+          <h1>From conversation to clarity</h1>
           <p>Vaidya Setu turns a completed teleconsultation into a prescription draft. Doctors can review and edit the draft, saving time on post-consultation typing.</p>
           <div className="setup-workflow">
             <span><AudioLines size={20} aria-hidden="true" /> Recording or transcript</span>
@@ -154,7 +154,7 @@ export function LabSetup({
           <h2 id="setup-heading" tabIndex={-1} ref={headingRef}>{signedIn ? "Add your Sarvam API key" : "Sign in to get started"}</h2>
           {signedIn ? (
             <>
-              <p>Sarvam uses your key to transcribe recordings and generate medication drafts and patient-language audio.</p>
+              <p>Use your key to transcribe recordings, draft prescriptions and create voice instructions.</p>
               <SarvamKeyForm submitLabel="Continue to consultation" onSubmit={onContinue} />
             </>
           ) : (
